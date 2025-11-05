@@ -2,6 +2,8 @@ package com.usta.serviexpress.Controller;
 
 import com.usta.serviexpress.Entity.ServicioEntity;
 import com.usta.serviexpress.Entity.UsuarioEntity;
+import com.usta.serviexpress.Repository.ServicioRepository;
+import com.usta.serviexpress.Service.ServicioApiClient;
 import com.usta.serviexpress.Service.ServicioService;
 import com.usta.serviexpress.Service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
@@ -10,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -249,4 +253,56 @@ public class ServicioController {
         }
         return "redirect:/servicio";
     }
+
+
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    // Crear servicio automático desde una API externa
+    @PostMapping("/auto/{tipo}")
+    public ResponseEntity<ServicioEntity> crearServicioAutomatico(@PathVariable String tipo) {
+        try {
+            // 1️⃣ Llamar API externa
+            String apiUrl = "https://api.ejemplo.com/servicios/" + tipo;
+            ServicioEntity servicioExterno = restTemplate.getForObject(apiUrl, ServicioEntity.class);
+
+            // 2️⃣ Validar respuesta
+            if (servicioExterno == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            // 3️⃣ Asignar valores predeterminados si faltan
+            if (servicioExterno.getEstado() == null) {
+                servicioExterno.setEstado(ServicioEntity.EstadoServicio.PENDIENTE);
+            }
+
+            // 4️⃣ Guardar servicio en la base de datos
+            servicioService.save(servicioExterno);
+
+            return ResponseEntity.ok(servicioExterno);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+
+    @GetMapping("/auto/{nombreServicio}")
+    public String crearServicioDesdeApi(@PathVariable String nombreServicio) {
+        String url = "https://api.ejemplo.com/servicios/" + nombreServicio; // cambia esto por tu API real
+
+        // Llama a la API externa
+        ServicioEntity servicioApi = restTemplate.getForObject(url, ServicioEntity.class);
+
+        if (servicioApi != null) {
+            servicioService.save(servicioApi);
+            return "Servicio " + nombreServicio + " creado exitosamente desde la API.";
+        } else {
+            return "No se pudo obtener información del servicio " + nombreServicio;
+        }
+    }
+
+
+
+
 }

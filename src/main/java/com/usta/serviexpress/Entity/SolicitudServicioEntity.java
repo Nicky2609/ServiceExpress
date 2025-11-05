@@ -1,5 +1,6 @@
 package com.usta.serviexpress.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -37,6 +38,7 @@ public class SolicitudServicioEntity implements Serializable {
     // ===== RELACIONES =====
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_servicio")
+    @JsonBackReference
     private ServicioEntity servicio;
 
     @ManyToOne(fetch = FetchType.LAZY)

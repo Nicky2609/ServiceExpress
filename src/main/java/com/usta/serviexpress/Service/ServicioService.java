@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ServicioService {
-    void save(ServicioEntity servicio);
+    ServicioEntity save(ServicioEntity servicio);
     ServicioEntity findById(Long idServicio);
     List<ServicioEntity> findPendientesByProveedor(Long idUsuario);
     List<ServicioEntity> findHistorialByProveedor(Long idUsuario);

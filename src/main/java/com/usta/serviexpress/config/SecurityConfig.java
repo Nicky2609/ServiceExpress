@@ -73,7 +73,7 @@ public class SecurityConfig {
         http
                 // CSRF
                 .csrf(csrf -> csrf.ignoringRequestMatchers(webhookMatcher))
-
+                //.csrf(csrf -> csrf.disable())
                 // tu provider
                 .authenticationProvider(authenticationProvider(passwordEncoder()))
 
@@ -86,7 +86,8 @@ public class SecurityConfig {
                                 "/checkout/**",
                                 "/pagos/**",
                                 "/webhooks/wompi",
-                                "/error"
+                                "/error",
+                                "/api/**"
                         ).permitAll()
 
                         // zonas con rol

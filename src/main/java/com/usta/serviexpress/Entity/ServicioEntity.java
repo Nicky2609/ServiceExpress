@@ -1,11 +1,13 @@
 package com.usta.serviexpress.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -51,7 +53,8 @@ public class ServicioEntity implements Serializable {
     private EstadoServicio estado = EstadoServicio.PENDIENTE;
 
     @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY)
-    private List<SolicitudServicioEntity> solicitudes;
+    @JsonManagedReference
+    private List<SolicitudServicioEntity> solicitudes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "id_proveedor")
@@ -60,4 +63,6 @@ public class ServicioEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private UsuarioEntity cliente;
+
+
 }

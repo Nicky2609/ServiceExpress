@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  provider-db:
+    image: postgres:15
+    container_name: provider-db
+    environment:
+      POSTGRES_DB: provider_db
+      POSTGRES_USER: provider_user
+      POSTGRES_PASSWORD: provider_pass
+    ports:
+      - "5433:5432"   # mapea al host 5433 para no interferir con otras DB
+    volumes:
+      - provider_db_data:/var/lib/postgresql/data
+
+volumes:
+  provider_db_data:

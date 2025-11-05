@@ -17,8 +17,9 @@ public class ServicioServiceImplement implements ServicioService {
     private final ServicioRepository servicioRepository;
 
     @Override
-    public void save(ServicioEntity servicio) {
+    public ServicioEntity save(ServicioEntity servicio) {
         servicioRepository.save(servicio);
+        return servicio;
     }
 
     @Override
@@ -93,4 +94,5 @@ public class ServicioServiceImplement implements ServicioService {
     public List<ServicioEntity> findByProveedorAndNombreContainingIgnoreCase(Long idUsuario, String nombre) {
         return servicioRepository.findByProveedor_IdUsuarioAndNombreContainingIgnoreCase(idUsuario, nombre);
     }
+
 }
